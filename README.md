@@ -75,7 +75,7 @@ Pg版本	| PostgreSQL 16.3
 2|PG到Gbase8a数据迁移|INSERT方式迁移，表定义及其他暂不支持。
 
 # 六、安装包下载地址
-大家可以在Release中下载。
+[releases版本下载地址](https://github.com/lxgczg/HappySunshine/releases)
 
 # 七、配置参数介绍
 序号|参数|备注
