@@ -60,7 +60,7 @@ Pg版本	| PostgreSQL 16.3
 序号|名称|备注
 -- | ----- | ------ 
 1|性能提升|INSERT方式将数据清洗逻辑，放到了消费者线程执行。
-2|出错任务终止|原：单表迁移出错，会将错误数据落地，继续迁移剩余数据。现：单表迁移出错，会将错误数据落地，终止此表任务。
+2|出错任务终止|原：单表迁移出错，会将错误数据落地，继续迁移剩余数据。<br>现：单表迁移出错，会将错误数据落地，终止此表任务。
 3|PG到Gbase8a库级数据迁移|INSERT方式迁移，表定义及其他暂不支持。
 4|PG到Gbase8a表级数据迁移|INSERT方式迁移，表定义及其他暂不支持。
 5|主键切分数据|PG到Gbase8a迁移时，PG表有一个整型主键，会自动拆分数据为N份（进程数）。
@@ -79,16 +79,16 @@ Pg版本	| PostgreSQL 16.3
 -- | ----- | ------ 
 1|[Tool]|Tool标签头，下面只能写Tool相关参数。
 2|ProcessNums|程序迁移时开的进程数。
-3|Level|迁移级别。1:表级迁移，SpecifiedTab生效。2:库级迁移，MigrationDb、BlackList生效。
-4|OsInfo|LOAD数据时使用。样例：'工具所在操作系统IP;操作系统用户;操作系统用户密码;'长度同下方的数据库IP;数据库用户名;数据库用户密码;
+3|Level|迁移级别。<br>1:表级迁移，SpecifiedTab生效。<br>2:库级迁移，MigrationDb、BlackList生效。
+4|OsInfo|LOAD数据时使用。<br>样例：'工具所在操作系统IP;操作系统用户;操作系统用户密码;'长度同下方的数据库IP;数据库用户名;数据库用户密码;
 5|OneBatchNums|一个批次插入的数据条数。（INSERT方式）
 6|SwitchNums|MigrationType为0的情况下，支持此参数，此数以上使用LOAD，以下使用INSERT。
-7|MigrationType|迁移类型，支持0、1。0 : Gbase8a     -> Gbase8a，1 : PostgreSql  -> Gbase8a。
+7|MigrationType|迁移类型，支持0、1。<br>0 : Gbase8a     -> Gbase8a<br>1 : PostgreSql  -> Gbase8a。
 8|[Source]|Source标签头，下面只能写Source相关参数。
-9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'（1）单个IP长度限制19，数据库IP地址。（2）单个用户名长度限制19，数据库用户名。（3）单个用户名密码长度限制29，数据库密码。（4）单个数据库名长度限制29，数据库名。（5）数据库端口。（6）长度限制9，数据库连接字符集，支持utf8和gbk。
-10|MigrationDb|库级迁移参数，单个数据库名长度限制29，需要迁移的数据库名。MigrationType为1的情况下，此为PG的模式名。
-11|BlackList|库级迁移参数，支持128个表，黑名单，表名，长度限制参考Db。和MigrationDb一起使用可以。
-12|SpecifiedTab|MigrationType为0的情况下，表级迁移参数,格式:'源端查询字段;源端库名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'MigrationType为1的情况下，表级迁移参数,格式:'源端查询字段;源端模式名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'如果没有特定条件，可以不写，但必须有分隔符，举例如下：';czg;testtab;;;zxj;NewTab;'这样相当于testtab迁移到NewTab，没有任何特殊条件。这个可以有多个标签，想迁移多少张表就写几个标签。
+9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'<br>（1）单个IP长度限制19，数据库IP地址。<br>（2）单个用户名长度限制19，数据库用户名。<br>（3）单个用户名密码长度限制29，数据库密码。<br>（4）单个数据库名长度限制29，数据库名。<br>（5）数据库端口。<br>（6）长度限制9，数据库连接字符集，支持utf8和gbk。
+10|MigrationDb|库级迁移参数，单个数据库名长度限制29，需要迁移的数据库名。<br>MigrationType为1的情况下，此为PG的模式名。
+11|BlackList|库级迁移参数，支持128个表，黑名单，表名，长度限制参考Db。<br>和MigrationDb一起使用可以。
+12|SpecifiedTab|MigrationType为0的情况下，表级迁移参数,<br>格式:'源端查询字段;源端库名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;<br><br>'MigrationType为1的情况下，表级迁移参数,<br>格式:'源端查询字段;源端模式名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;<br><br>'如果没有特定条件，可以不写，但必须有分隔符，举例如下：<br>';czg;testtab;;;zxj;NewTab;'<br>这样相当于testtab迁移到NewTab，没有任何特殊条件。这个可以有多个标签，想迁移多少张表就写几个标签。
 13|[Target]|Target标签头，下面只能写Target相关参数。
 14|ConnInfo|参考Source的。
 15|MigrationDb|参考Source的。
@@ -388,13 +388,12 @@ gbase> desc czg.testtab_copy;
 工具名|每秒条数|方式|环境
 --|--|--|--
 HappySunshine|48545|INSERT|本机Linux虚拟机
- |87381|LOAD|
+| |87381|LOAD|
 GBaseMigrationToolkit_8.5.20.0_build4_winx86_64|13375|INSERT|本机win
 
 ### （3）HappySunshine截图
 INSERT
-
-
+![INSERT]()
 LOAD
 
 
