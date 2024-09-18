@@ -1,6 +1,9 @@
 # HappySunshine
 数据迁移工具，个人兴趣，写一写，练一练。
 
+# 本人CSDN博客
+[阳光九叶草LXGZXJ](https://blog.csdn.net/qq_45111959?type=blog)
+
 # 一、环境信息
 名称 | 值
 ---- | -----
@@ -18,7 +21,7 @@ Pg版本	| PostgreSQL 16.3
 # 三、架构图
 我的画图水平感觉还不错。
 
-
+![HS](https://github.com/lxgczg/HappySunshine/blob/main/HS.PNG)
 
 1、管理者进程启动。
 
@@ -392,12 +395,15 @@ HappySunshine|48545|INSERT|本机Linux虚拟机
 GBaseMigrationToolkit_8.5.20.0_build4_winx86_64|13375|INSERT|本机win
 
 ### （3）HappySunshine截图
-INSERT
-![INSERT]()
-LOAD
+#### INSERT
 
+![INSERT](https://github.com/lxgczg/HappySunshine/blob/main/INSERT.png)
+
+#### LOAD
+
+![LOAD](https://github.com/lxgczg/HappySunshine/blob/main/LOAD.png)
 
 ### （4）GBaseMigrationToolkit截图
 
-
+![Gbase8aTool](https://github.com/lxgczg/HappySunshine/blob/main/Gbase8aTool.png)
 ​
