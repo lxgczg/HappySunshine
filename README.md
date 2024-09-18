@@ -1,5 +1,5 @@
 # HappySunshine
-数据迁移工具，个人兴趣，写一写，练一练。
+数据迁移工具（支持Gbase8a、Postgres），个人兴趣，写一写，练一练。
 
 # 本人CSDN博客
 [阳光九叶草LXGZXJ](https://blog.csdn.net/qq_45111959?type=blog)
