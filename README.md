@@ -368,8 +368,8 @@ Flag               : STRING_TYPE_FLAG
 ```
 我这边测试的PUBLIC.TESTTAB表包含一个整型主键，所以进行了数据切分，效率在48000 Row/s左右，因为我这边虚机资源有限，如果大家有条件的话，最好PG、GBASE8A、HappySunshine分别放在三台机器上运行，这时大家可以加大进程数，看一下单表（包含一个整型主键）的效果，应该会更快一些。
 
-# 十、性能对比
-我们测试将czg库下的testtab_copy拉到zxj库下，对比效率。
+# 十、性能测试
+测试将czg库下的testtab_copy迁移到zxj库下。
 
 ## 1、Gbase8a -> Gbase8a
 ### （1）测试数据
@@ -414,12 +414,11 @@ gbase> desc czg.testtab_copy;
 +-------+--------------+------+-----+-------------------+-----------------------------+
 8 rows in set (Elapsed: 00:00:00.00)
 ```
-### （2）对比表格
+### （2）性能数据表格
 工具名|每秒条数|方式|环境
 --|--|--|--
 HappySunshine|48545|INSERT|本机Linux虚拟机
 | |87381|LOAD|
-GBaseMigrationToolkit_8.5.20.0_build4_winx86_64|13375|INSERT|本机win
 
 ### （3）HappySunshine截图
 #### INSERT
@@ -429,8 +428,4 @@ GBaseMigrationToolkit_8.5.20.0_build4_winx86_64|13375|INSERT|本机win
 #### LOAD
 
 ![LOAD](https://github.com/lxgczg/HappySunshine/blob/main/Photo/LOAD.png)
-
-### （4）GBaseMigrationToolkit截图
-
-![Gbase8aTool](https://github.com/lxgczg/HappySunshine/blob/main/Photo/Gbase8aTool.png)
 ​
