@@ -23,7 +23,7 @@ HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序
 # 三、架构图
 我的画图水平感觉还不错。
 
-![HS](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HS.PNG)
+![HS](https://i-blog.csdnimg.cn/blog_migrate/69fb8c4716412dde87e34b76eadb2bb8.png)
 
 画图水平感觉还不错，给自己点个赞。
 
