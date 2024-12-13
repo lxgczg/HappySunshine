@@ -86,6 +86,7 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 5|多进程并发加载单表数据|源端库为PG，迁移表包含单一整型主键，进程数设置大于1时，支持此项。
 
 # 六、后续计划支持功能
+展望是挺多的，奈何时间不多呀。
 序号|功能|备注
 -- | ----- | ------ 
 1|支持目的端为PG|通过libpq接口Copy。
@@ -108,7 +109,7 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 6|SwitchNums|MigrationType为0的情况下，支持此参数，此数以上使用LOAD，以下使用INSERT。
 7|MigrationType|迁移类型，支持0、1、2。<br>0 : Gbase8a     -> Gbase8a<br>1 : PostgreSql  -> Gbase8a<br>2 : PostgreSql  -> Dm
 8|[Source]|Source标签头，下面只能写Source相关参数。
-9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'<br>（1）单个IP长度限制19，数据库IP地址。<br>（2）单个用户名长度限制19，数据库用户名。<br>（3）单个用户名密码长度限制29，数据库密码。<br>（4）单个数据库名长度限制29，数据库名。<br>（5）数据库端口。<br>（6）长度限制9，数据库连接字符集，支持utf8和gbk，如果是达梦连接，需填写数字，对照表如下：<br>（1）UTF8                            1<br>（2）GBK                              2<br>（3）BIG5                             3<br>（4）ISO_8859_9                  4<br>（5）EUC_JP                          5<br>（6）EUC_KR                        6<br>（7）KOI8R                           7<br>（8）ISO_8859_1                  8<br>（9）SQL_ASCII                    9<br>（10）GB18030                    10<br>（11）ISO_8859_11             11
+9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'<br>1、单个IP长度限制19，数据库IP地址。<br>2、单个用户名长度限制19，数据库用户名。<br>3、单个用户名密码长度限制29，数据库密码。<br>4、单个数据库名长度限制29，数据库名。<br>5、数据库端口。<br>6、长度限制9，数据库连接字符集，支持utf8和gbk，如果是达梦连接，需填写数字，对照表如下：<br>    （1）UTF8                            1<br>    （2）GBK                              2<br>    （3）BIG5                             3<br>    （4）ISO_8859_9                  4<br>    （5）EUC_JP                          5<br>    （6）EUC_KR                        6<br>    （7）KOI8R                           7<br>    （8）ISO_8859_1                  8<br>    （9）SQL_ASCII                    9<br>    （10）GB18030                    10<br>    （11）ISO_8859_11             11
 10|MigrationDb|库级迁移参数，单个数据库名长度限制29，需要迁移的数据库名。<br>MigrationType为1的情况下，此为PG的模式名。
 11|BlackList|库级迁移参数，支持128个表，黑名单，表名，长度限制参考Db。<br>和MigrationDb一起使用可以。
 12|SpecifiedTab|（1）MigrationType为0的情况下，表级迁移参数,格式:'源端查询字段;源端库名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'<br><br>（2）MigrationType为1的情况下，表级迁移参数,格式:'源端查询字段;源端模式名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'<br><br>（3）如果没有特定条件，可以不写，但必须有分隔符，举例如下：';czg;testtab;;;zxj;NewTab;'<br>这样相当于testtab迁移到NewTab，没有任何特殊条件。<br>这个可以有多个标签，想迁移多少张表就写几个标签。
@@ -572,155 +573,105 @@ MigrationDb   : 'zxj;'                                           //库级迁移�
 ```
 
 # 十、性能对比测试
-## 1、Gbase8a -> Gbase8a
+和开源ETL工具Kettle进行对比测试。
+由于本人测试条件有限（所有的数据库和工具都部署在一个虚机里），如果大家有条件可以在性能更好的环境下测试，迁移效率肯定会比下面的结果更好。
+## 1、性能测试对比表格
+工具名\迁移项（单位：行/秒）|Gbase8a -> Gbase8a|PostgreSql -> Gbase8a|PostgreSql -> Dm
+------- | ----- | ------ | ------ 
+HappySunshine|43690（INSERT）<br>98304（LOAD）|43690|78643
+Kettle|3215|2964|20837
+
+## 2、测试表结构
+### （1）Gbase8a
 ```
-[gbase@czg0 Exec]$ ./HsManager &
-
-[gbase@czg0 Exec]$ tail -100f HappySunshineV1.4.log
-2024-08-16 10:44:56-P[50461]-T[50461]-[Info ]-HappySunshineV1.4
-2024-08-16 10:44:56-P[50461]-T[50461]-[Info ]-PrintHsMngrSt      :
-OsEnv              : /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/HappySunshine
-OsUser             : gbase
-OsPwd              : gbase
-OsIp               : 192.168.142.12
-SrcMigrationDb     : czg
-TgtMigrationDb     : 
-OneBatchNums       : 50000
-SwitchNums         : 2000000
-Level              : 1
-ProcessNums        : 2
-ConnInfo           : [192.168.142.12,root,,czg,5258,utf8] -> [192.168.142.12,czg,qwer1234,zxj,5258,utf8]
-PrintSeq           : TaskQ,BlackList,WhiteList.
-2024-08-16 10:44:56-P[50461]-T[50461]-[Info ]-StrSqQ             :
-Data               : []
-FrontIndex         : 0
-RearIndex          : 0
-SqQueueLen         : 0
-2024-08-16 10:44:56-P[50461]-T[50461]-[Info ]-SqQueue Data       :
-Data               : [ 'testtab' ]
-FrontIndex         : 0
-RearIndex          : 1
-SqQueueLen         : 1
-SqQueueMaxLen      : 50
-Flag               : STRING_TYPE_FLAG
-2024-08-16 10:44:56-P[50461]-T[50461]-[Info ]-SqQueue Data       :
-Data               : [ 'a,b,c;czg;testtab;Limit 10;x,y,z;zxj;NewTab;' ,';czg;testtab_copy;;;zxj;testtab_copy;' ,';czg;czg;;;zxj;czg;' ]
-FrontIndex         : 0
-RearIndex          : 3
-SqQueueLen         : 3
-SqQueueMaxLen      : 50
-Flag               : STRING_TYPE_FLAG
-2024-08-16 10:44:57-P[50465]-T[50475]-[Info ]-Migration Complete : czg.testtab              -> zxj.NewTab              , DataNum :         10 Row, Elapsed Time :     0 s.
-2024-08-16 10:44:57-P[50465]-T[50475]-[Info ]-Migration Complete : czg.czg                  -> zxj.czg                 , DataNum :       2050 Row, Elapsed Time :     0 s.
-2024-08-16 10:45:22-P[50466]-T[50473]-[Info ]-Migration Complete : czg.testtab_copy         -> zxj.testtab_copy        , DataNum :    1310727 Row, Elapsed Time :    25 s, Efficiency : 52429 Row/s.
-2024-08-16 10:46:22-P[50461]-T[50461]-[Info ]-HappySunshine Quit : OK.
+gbase> DESC ZXJ.TESTTAB;
++-------+---------------+------+-----+-------------------+-----------------------------+
+| Field | Type          | Null | Key | Default           | Extra                       |
++-------+---------------+------+-----+-------------------+-----------------------------+
+| a     | int(11)       | YES  |     | NULL              |                             |
+| b     | double        | YES  |     | NULL              |                             |
+| c     | varchar(100)  | YES  | MUL | NULL              |                             |
+| d     | text          | YES  |     | NULL              |                             |
+| e     | blob          | YES  |     | NULL              |                             |
+| f     | longblob      | YES  |     | NULL              |                             |
+| g     | date          | YES  |     | NULL              |                             |
+| h     | timestamp     | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| i     | decimal(10,2) | YES  |     | NULL              |                             |
++-------+---------------+------+-----+-------------------+-----------------------------+
+9 rows in set (Elapsed: 00:00:00.00)
 ```
-## 2、Pg -> Gbase8a
+### （2）DM
 ```
-[gbase@czg2 Exec]$ ./HsManager &
-[1] 30081
-[gbase@czg2 Exec]$ tail -100f HappySunshineV1.4.log 
-2024-09-18 10:45:22-P[30081]-T[30081]-[Info ]-HappySunshineV1.4
-2024-09-18 10:45:22-P[30081]-T[30081]-[Info ]-PrintHsMngrSt      :
-MigrationType      : 1
-OsEnv              : /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/HappySunshine
-OsUser             : gbase
-OsPwd              : gbase
-OsIp               : 192.168.142.12
-SrcDb              : zxj
-DestDb             : zxj
-OneBatchNums       : 80000
-SwitchNums         : 2000000
-Level              : 1
-ProcessNums        : 2
-ConnInfo           : [192.168.142.12,postgres,postgres,czg,5432,utf8] -> [192.168.142.12,czg,qwer1234,zxj,5258,utf8]
-PrintSeq           : TaskQ,BlackList,WhiteList.
-2024-09-18 10:45:22-P[30081]-T[30081]-[Info ]-StrSqQ             :
-Data               : []
-FrontIndex         : 0
-RearIndex          : 0
-SqQueueLen         : 0
-2024-09-18 10:45:22-P[30081]-T[30081]-[Info ]-SqQueue Data       :
-Data               : []
-FrontIndex         : 0
-RearIndex          : 0
-SqQueueLen         : 0
-SqQueueMaxLen      : 50
-Flag               : STRING_TYPE_FLAG
-2024-09-18 10:45:22-P[30081]-T[30081]-[Info ]-SqQueue Data       :
-Data               : [ ';public;testtab;;;zxj;testtab;' ,';public;students;;;zxj;students;' ,';public;haha;;;zxj;haha;' ]
-FrontIndex         : 0
-RearIndex          : 3
-SqQueueLen         : 3
-SqQueueMaxLen      : 50
-Flag               : STRING_TYPE_FLAG
-2024-09-18 10:45:22-P[30084]-T[30111]-[Info ]-PgPkSplit2Q        : OK, Schema : public, Tab : testtab, SplitNums : 2.
-2024-09-18 10:45:22-P[30083]-T[30118]-[Info ]-Migration Complete : public.students             -> zxj.students            , DataNum :          0 Row, Elapsed Time :    0.001 s.
-2024-09-18 10:45:22-P[30083]-T[30118]-[Info ]-Migration Complete : public.haha                 -> zxj.haha                , DataNum :          0 Row, Elapsed Time :    0.001 s.
-2024-09-18 10:46:01-P[30083]-T[30118]-[Info ]-Migration Complete : public.testtab              -> zxj.testtab             , DataNum :    1049631 Row, Elapsed Time :   38.782 s, Efficiency : 27621 Row/s.
-2024-09-18 10:46:10-P[30084]-T[30111]-[Info ]-Migration Complete : public.testtab              -> zxj.testtab             , DataNum :    1048608 Row, Elapsed Time :   47.605 s, Efficiency : 22310 Row/s.
-2024-09-18 10:47:10-P[30081]-T[30081]-[Info ]-HappySunshine Quit : OK.
+SQL> DESC ZXJ.TESTTAB;
+
+行号     NAME TYPE$        NULLABLE
+---------- ---- ------------ --------
+1          A    INTEGER      Y
+2          B    DOUBLE       Y
+3          C    VARCHAR(100) Y
+4          D    TEXT         Y
+5          E    BLOB         Y
+6          F    BLOB         Y
+7          G    DATE         Y
+8          H    DATETIME(6)  Y
+9          I    DEC(10, 2)   Y
+
+9 rows got
 ```
-我这边测试的PUBLIC.TESTTAB表包含一个整型主键，所以进行了数据切分，效率在48000 Row/s左右，因为我这边虚机资源有限，如果大家有条件的话，最好PG、GBASE8A、HappySunshine分别放在三台机器上运行，这时大家可以加大进程数，看一下单表（包含一个整型主键）的效果，应该会更快一些。
-
-# 十、性能测试
-测试将czg库下的testtab_copy迁移到zxj库下。
-
-## 1、Gbase8a -> Gbase8a
-### （1）测试数据
+### （3）PostgreSql
 ```
-gbase> select count(*) from czg.testtab_copy;
-+----------+
-| count(*) |
-+----------+
-|  1310720 |
-+----------+
-1 row in set (Elapsed: 00:00:00.00)
-
-gbase> select * from czg.testtab_copy limit 10;
-+------+------+------+--------------------+---------------------+--------------------------+------------+---------------------+
-| a    | b    | c    | d                  | e                   | f                        | g          | h                   |
-+------+------+------+--------------------+---------------------+--------------------------+------------+---------------------+
-|    1 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    1 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    1 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    1 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    1 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    2 |  1.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    2 |  4.1 | czg  | 快乐的小天使       | qwertasdsdfzxczxxv  | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    2 |  4.1 | czg  | 快乐的小天使       | qwertasdsdfz\xczxxv | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    2 |  4.1 | czg  | 快乐的小天使       | qwertasdsdfz.xczxxv | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-|    2 |  4.1 | czg  | 快乐的小天使       | qwertasdsdfz.xczxxv | gregergjsfishfuieehfuiew | 1995-09-18 | 2022-08-03 09:24:00 |
-+------+------+------+--------------------+---------------------+--------------------------+------------+---------------------+
-10 rows in set (Elapsed: 00:00:00.31)
-
-gbase> desc czg.testtab_copy;
-+-------+--------------+------+-----+-------------------+-----------------------------+
-| Field | Type         | Null | Key | Default           | Extra                       |
-+-------+--------------+------+-----+-------------------+-----------------------------+
-| a     | int(11)      | YES  |     | NULL              |                             |
-| b     | double       | YES  |     | NULL              |                             |
-| c     | varchar(100) | YES  |     | NULL              |                             |
-| d     | text         | YES  |     | NULL              |                             |
-| e     | blob         | YES  |     | NULL              |                             |
-| f     | longblob     | YES  |     | NULL              |                             |
-| g     | date         | YES  |     | NULL              |                             |
-| h     | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
-+-------+--------------+------+-----+-------------------+-----------------------------+
-8 rows in set (Elapsed: 00:00:00.00)
+czg=# \d public.testtab
+                                      Table "public.testtab"
+ Column |            Type             | Collation | Nullable |              Default               
+--------+-----------------------------+-----------+----------+------------------------------------
+ a      | integer                     |           | not null | nextval('testtab_a_seq'::regclass)
+ b      | double precision            |           |          | 
+ c      | character varying(100)      |           |          | 
+ d      | text                        |           |          | 
+ e      | bytea                       |           |          | 
+ f      | bytea                       |           |          | 
+ g      | date                        |           |          | 
+ h      | timestamp without time zone |           |          | 
+ i      | numeric(10,2)               |           |          | 
+Indexes:
+    "testtab_pkey" PRIMARY KEY, btree (a)
 ```
-### （2）性能数据表格
-工具名|每秒条数|方式|环境
---|--|--|--
-HappySunshine|48545|INSERT|本机Linux虚拟机
-| |87381|LOAD|
+## 3、测试数据样式
+```
+czg=# SELECT * FROM PUBLIC.TESTTAB LIMIT 10;
+    a    |  b  |      c      |    d     |       e        |             f              |     g      |          h          |    i    
+---------+-----+-------------+----------+----------------+----------------------------+------------+---------------------+---------
+ 2399798 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |        
+ 2399799 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |    0.00
+ 2399800 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |    8.80
+ 2399801 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |   -8.80
+ 2399802 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |  348.80
+ 2399803 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 | -348.80
+ 2399804 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |        
+ 2399805 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |    0.00
+ 2399806 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |    8.80
+ 2399807 | 2.1 | LXG'ZXJ|CLX | HAHHAHAH | \x414141414141 | \x424242424242424242424242 | 2024-08-19 | 2024-08-19 00:00:00 |   -8.80
+(10 rows)
+```
 
-### （3）HappySunshine截图
-#### INSERT
+## 4、HappySunshine测试截图
+### （1）PostgreSql -> Dm
+![INSERT](https://i-blog.csdnimg.cn/direct/ae3c4ac54cba4f0baf71eac722cc2db7.png)
+### （2）PostgreSql -> Gbase8a
+![INSERT](https://i-blog.csdnimg.cn/direct/6eecb25f6bb84a579e6020d7c982b1e9.png)
+### （3）Gbase8a-> Gbase8a
+INSERT
+![INSERT](https://i-blog.csdnimg.cn/direct/89d0108aca714bdf859822acf6f22286.png)
+LOAD
+![INSERT](https://i-blog.csdnimg.cn/direct/f49687a2ff6d451aa32c12a8deac6f3e.png)
 
+
+
+
+
+### （1）PostgreSql -> Dm
 ![INSERT](https://github.com/lxgczg/HappySunshine/blob/main/Photo/INSERT.png)
-
-#### LOAD
-
-![LOAD](https://github.com/lxgczg/HappySunshine/blob/main/Photo/LOAD.png)
-​
+### （2）PostgreSql -> Gbase8a
+![INSERT](https://github.com/lxgczg/HappySunshine/blob/main/Photo/INSERT.png)
+### （3）Gbase8a-> Gbase8a
+![INSERT](https://github.com/lxgczg/HappySunshine/blob/main/Photo/INSERT.png)
