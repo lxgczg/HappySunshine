@@ -85,24 +85,33 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 4|多线程并发加载单表数据|	
 5|多进程并发加载单表数据|源端库为PG，迁移表包含单一整型主键，进程数设置大于1时，支持此项。
 
-# 六、安装包下载地址
+# 六、后续计划支持功能
+序号|功能|备注
+-- | ----- | ------ 
+1|支持目的端为PG|通过libpq接口Copy。
+2|支持Oracle数据迁移|通过OCI接口。
+3|支持达梦快速装载|通过DM FLDR的C接口。
+4|支持信号处理|	
+5|支持License|	
+
+# 七、安装包下载地址
 [releases版本下载地址](https://github.com/lxgczg/HappySunshine/releases)
 
-# 七、配置参数介绍
+# 八、配置参数介绍
 序号|参数|备注
 -- | ----- | ------ 
 1|[Tool]|Tool标签头，下面只能写Tool相关参数。
 2|ProcessNums|程序迁移时开的进程数。
 3|Level|迁移级别。<br>1:表级迁移，SpecifiedTab生效。<br>2:库级迁移，MigrationDb、BlackList生效。
 4|OsInfo|LOAD数据时使用。<br>样例：'工具所在操作系统IP;操作系统用户;操作系统用户密码;'长度同下方的数据库IP;数据库用户名;数据库用户密码;
-5|OneBatchNums|一个批次插入的数据条数。（INSERT方式）
+5|OneBatchNums|MigrationType为0、1、2的情况下，支持此参数，一个批次插入的数据条数。（INSERT方式）
 6|SwitchNums|MigrationType为0的情况下，支持此参数，此数以上使用LOAD，以下使用INSERT。
-7|MigrationType|迁移类型，支持0、1。<br>0 : Gbase8a     -> Gbase8a<br>1 : PostgreSql  -> Gbase8a。
+7|MigrationType|迁移类型，支持0、1、2。<br>0 : Gbase8a     -> Gbase8a<br>1 : PostgreSql  -> Gbase8a<br>2 : PostgreSql  -> Dm
 8|[Source]|Source标签头，下面只能写Source相关参数。
-9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'<br>（1）单个IP长度限制19，数据库IP地址。<br>（2）单个用户名长度限制19，数据库用户名。<br>（3）单个用户名密码长度限制29，数据库密码。<br>（4）单个数据库名长度限制29，数据库名。<br>（5）数据库端口。<br>（6）长度限制9，数据库连接字符集，支持utf8和gbk。
+9|ConnInfo|样例：'IP;数据库用户名;数据库用户密码;数据库名;数据库端口号;数据连接字符集;'<br>（1）单个IP长度限制19，数据库IP地址。<br>（2）单个用户名长度限制19，数据库用户名。<br>（3）单个用户名密码长度限制29，数据库密码。<br>（4）单个数据库名长度限制29，数据库名。<br>（5）数据库端口。<br>（6）长度限制9，数据库连接字符集，支持utf8和gbk，如果是达梦连接，需填写数字，对照表如下：<br>（1）UTF8                            1<br>（2）GBK                              2<br>（3）BIG5                             3<br>（4）ISO_8859_9                  4<br>（5）EUC_JP                          5<br>（6）EUC_KR                        6<br>（7）KOI8R                           7<br>（8）ISO_8859_1                  8<br>（9）SQL_ASCII                    9<br>（10）GB18030                    10<br>（11）ISO_8859_11             11
 10|MigrationDb|库级迁移参数，单个数据库名长度限制29，需要迁移的数据库名。<br>MigrationType为1的情况下，此为PG的模式名。
 11|BlackList|库级迁移参数，支持128个表，黑名单，表名，长度限制参考Db。<br>和MigrationDb一起使用可以。
-12|SpecifiedTab|MigrationType为0的情况下，表级迁移参数,<br>格式:'源端查询字段;源端库名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;<br><br>'MigrationType为1的情况下，表级迁移参数,<br>格式:'源端查询字段;源端模式名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;<br><br>'如果没有特定条件，可以不写，但必须有分隔符，举例如下：<br>';czg;testtab;;;zxj;NewTab;'<br>这样相当于testtab迁移到NewTab，没有任何特殊条件。这个可以有多个标签，想迁移多少张表就写几个标签。
+12|SpecifiedTab|（1）MigrationType为0的情况下，表级迁移参数,格式:'源端查询字段;源端库名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'<br><br>（2）MigrationType为1的情况下，表级迁移参数,格式:'源端查询字段;源端模式名;源端表名;源端过滤条件;目的端插入字段;目的端库名;目的端表名;'<br><br>（3）如果没有特定条件，可以不写，但必须有分隔符，举例如下：';czg;testtab;;;zxj;NewTab;'<br>这样相当于testtab迁移到NewTab，没有任何特殊条件。<br>这个可以有多个标签，想迁移多少张表就写几个标签。
 13|[Target]|Target标签头，下面只能写Target相关参数。
 14|ConnInfo|参考Source的。
 15|MigrationDb|参考Source的。
