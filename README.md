@@ -15,7 +15,7 @@ HappySunshine版本|V1.5
 Kettle版本|pdi-ce-9.5.0.1-261
 Gbase8a版本|8.6.2-R43.34.27468a27
 Pg版本|PostgreSQL 16.3
-DM版本|1          DM Database Server 64 V82          DB Version: 0x7000c3          03134284194-20240703-234060-201084          Msg Version: 125          Gsu level(5) cnt: 0
+DM版本|1          DM Database Server 64 V8<br>2          DB Version: 0x7000c<br>3          03134284194-20240703-234060-20108<br>4          Msg Version: 12<br>5          Gsu level(5) cnt: 0
 
 # 二、简述
 HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
@@ -81,6 +81,9 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 -- | ----- | ------ 
 1|Gbase8a到8a数据迁移|INSERT、LOAD方式迁移，表定义及其他暂不支持。
 2|PG到Gbase8a数据迁移|INSERT方式迁移，表定义及其他暂不支持。
+3|PG到DM数据迁移|INSERT方式迁移，表定义及其他暂不支持。
+4|多线程并发加载单表数据|	
+5|多进程并发加载单表数据|源端库为PG，迁移表包含单一整型主键，进程数设置大于1时，支持此项。
 
 # 六、安装包下载地址
 [releases版本下载地址](https://github.com/lxgczg/HappySunshine/releases)
