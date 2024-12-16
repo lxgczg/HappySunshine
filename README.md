@@ -668,4 +668,4 @@ LOAD
 测试步骤大家可以参考之前写的博客《》
 ### （3）Gbase8a-> Gbase8a
 ![INSERT](https://i-blog.csdnimg.cn/direct/194d48037d15427f99f9b481b94164c1.png)
-测试步骤大家可以参考之前写的博客《》
+测试步骤大家可以参考之前写的博客《[Kettle-学习-01-Gbase8a迁移至Gbase8a](https://blog.csdn.net/qq_45111959/article/details/144428396?spm=1001.2014.3001.5502)》
