@@ -662,10 +662,10 @@ LOAD
 ## 5、Kettle测试截图
 ### （1）PostgreSql -> Dm
 ![INSERT](https://i-blog.csdnimg.cn/direct/93dbf074382c4ee6869aa2cf467e55a7.png)
-测试步骤大家可以参考之前写的博客《》
+测试步骤大家可以参考之前写的博客《[Kettle-学习-03-PostgreSql迁移至达梦DM](https://blog.csdn.net/qq_45111959/article/details/144443435?spm=1001.2014.3001.5501)》
 ### （2）PostgreSql -> Gbase8a
 ![INSERT](https://i-blog.csdnimg.cn/direct/2e3415071d364de8af997cdbcf642fee.png)
-测试步骤大家可以参考之前写的博客《》
+测试步骤大家可以参考之前写的博客《[Kettle-学习-02-PostgreSql迁移至Gbase8a](https://blog.csdn.net/qq_45111959/article/details/144442657?spm=1001.2014.3001.5501)》
 ### （3）Gbase8a-> Gbase8a
 ![INSERT](https://i-blog.csdnimg.cn/direct/194d48037d15427f99f9b481b94164c1.png)
 测试步骤大家可以参考之前写的博客《[Kettle-学习-01-Gbase8a迁移至Gbase8a](https://blog.csdn.net/qq_45111959/article/details/144428396?spm=1001.2014.3001.5502)》
