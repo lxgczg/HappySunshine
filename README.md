@@ -1,6 +1,6 @@
 # 本人CSDN博客
 [阳光九叶草LZL](https://blog.csdn.net/qq_45111959?type=blog)
-
+![帅气封面](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HappySunshine1.PNG)
 # 一、环境信息
 名称 | 值
 ---- | -----
