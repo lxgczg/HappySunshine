@@ -15,7 +15,7 @@ DM版本|1          DM Database Server 64 V8<br>2          DB Version:
 
 # 二、简述
 ![HS Logo](https://i-blog.csdnimg.cn/direct/46434485de454704bc21de782bc4220d.png)
-HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
+<br>HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
 
 # 三、架构图
 ![HS](https://i-blog.csdnimg.cn/blog_migrate/69fb8c4716412dde87e34b76eadb2bb8.png)
