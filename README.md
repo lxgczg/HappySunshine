@@ -225,6 +225,16 @@ pg_lsn
 [GITHUB-HappySunshine-release版下载地址](https://github.com/lxgczg/HappySunshine/releases)
 
 # 八、配置参数介绍
+## 1、离线抽取
+序号|参数|备注
+-- | ----- | ------ 
+1	|PG数据库目录	|/opt/Pg14-5/Data/base/13892/
+2	|数据落地目录	|/home/czg/TestPgData/
+3	|PG数据块大小	|8192
+4	|模式名	        |指定模式名，'*'代表所有模式。
+5	|表名	        |指定表名，'*'代表所有表。
+
+## 2、在线迁移
 序号|参数|备注
 -- | ----- | ------ 
 1|[Tool]|Tool标签头，下面只能写Tool相关参数。
