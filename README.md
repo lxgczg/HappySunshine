@@ -891,6 +891,11 @@ LOAD
 2026-05-17 14:11:39.215802-P[54844]-T[54844]-[Info ]-main               : OK, Task completed, Time :     0.062 (s.ms).
 ```
 
+## 4、数据加载示例
+```
+COPY MOON FROM '/home/czg/TestPgData/public_sun.txt' WITH (FORMAT CSV,DELIMITER '|',NULL '',QUOTE '"',ESCAPE '\');
+```
+
 # 十二、许可证
 版本|限制
 --- | ---
