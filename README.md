@@ -95,75 +95,75 @@ PG数据离线抽取功能是一个单进程单线程的程序，解析流程如
 ### （1）数字类型
 名字|是否支持
 --------------- | -----
-smallint	√
-integer	√
-bigint	√
-decimal	√
-numeric	√
-real	√
-double precision	√
-smallserial	√
-serial	√
-bigserial	√
+smallint	| √
+integer	| √
+bigint	| √
+decimal	| √
+numeric	| √
+real	| √
+double precision	| √
+smallserial	| √
+serial	| √
+bigserial	| √
 ### （2）货币类型
 名字|是否支持
 --------------- | -----
-money	√
+money	| √
 ### （3）字符类型
 名字|是否支持
 --------------- | -----
-character varying(n), varchar(n)	√
-character(n), char(n)	√
-text	√
+character varying(n), varchar(n)	| √
+character(n), char(n)	| √
+text	| √
 ### （4）特殊字符类型
 名字|是否支持
 --------------- | -----
-"char"	√
-name	√
+"char"	| √
+name	| √
 ### （5）二进制数据类型
 名字|是否支持
 --------------- | -----
-bytea	√
+bytea	| √
 ### （6）日期/时间类型
 名字|是否支持
 --------------- | -----
-timestamp [ (p) ] [ without time zone ]	√
-timestamp [ (p) ] with time zone	√
-date	√
-time [ (p) ] [ without time zone ]	√
-time [ (p) ] with time zone	√
-interval [ fields ] [ (p) ]	√
+timestamp [ (p) ] [ without time zone ]	| √
+timestamp [ (p) ] with time zone	| √
+date	| √
+time [ (p) ] [ without time zone ]	| √
+time [ (p) ] with time zone	| √
+interval [ fields ] [ (p) ]	| √
 ### （7）布尔数据类型
 名字|是否支持
 --------------- | -----
-boolean	√
+boolean	| √
 ### （8）枚举类型
 名字|是否支持
 --------------- | -----
-enum	√
+enum	| √
 ### （9）几何类型
 名字|是否支持
 --------------- | -----
-point	√
-line	√
-lseg	√
-box	√
-path### （封闭路径）	√
-path### （开放路径）	√
-polygon	√
-circle	√
+point	| √
+line	| √
+lseg	| √
+box	| √
+path### （封闭路径）	| √
+path### （开放路径）	| √
+polygon	| √
+circle	| √
 ### （10）网络地址类型
 名字|是否支持
 --------------- | -----
-cidr	√
-inet	√
-macaddr	√
-macaddr8	√
+cidr	| √
+inet	| √
+macaddr	| √
+macaddr8	| √
 ### （11）位串类型
 名字|是否支持
 --------------- | -----
-bit	√
-bit varying	√
+bit	| √
+bit varying	| √
 ### （12）文本搜索类型
 名字|是否支持
 --------------- | -----
@@ -172,24 +172,24 @@ tsquery
 ### （13）UUID类型
 名字|是否支持
 --------------- | -----
-UUID	√
+UUID	| √
 ### （14）XML类型
 名字|是否支持
 --------------- | -----
-XML	√
+XML	| √
 ### （15）JSON类型
 名字|是否支持
 --------------- | -----
-JSON	√
-JSONB	√
-JSONPATH	√
+JSON	| √
+JSONB	| √
+JSONPATH	| √
 ### （16）数组类型
 内部实现支持N维，只验证了以下基础类型，其他基础类型也是支持的，只是未测试。
 
 名字|是否支持
 --------------- | -----
-INT[]	√
-VARCHAR[]	√
+INT[]	| √
+VARCHAR[]	| √
 ### （17）组合类型
 名字|是否支持
 --------------- | -----
@@ -202,8 +202,8 @@ VARCHAR[]	√
 ### （20） 对象标识符类型
 名字|是否支持
 --------------- | -----
-OID	√
-XID	√
+OID	| √
+XID	| √
 ### （21） pg_lsn 类型
 名字|是否支持
 --------------- | -----
