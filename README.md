@@ -213,11 +213,13 @@ pg_lsn
 展望是挺多的，奈何时间不多呀。
 序号|功能|备注
 -- | ----- | ------ 
-1|支持目的端为PG|通过libpq接口Copy。
-2|支持Oracle数据迁移|通过OCI接口。
-3|支持达梦快速装载|通过DM FLDR的C接口。
-4|支持信号处理|	
-5|支持License|	
+1|支持PG单表并行离线抽取	
+2|支持Oracle数据迁移	
+3|支持达梦快速装载	
+4|支持信号处理	
+5|支持DM 切分数据	
+6|支持PG 切分数据	
+7|支持目的端为PG	
 
 # 七、安装包下载地址
 [GITHUB-HappySunshine-release版下载地址](https://github.com/lxgczg/HappySunshine/releases)
