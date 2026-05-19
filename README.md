@@ -448,6 +448,23 @@ export LD_LIBRARY_PATH=$HAPPY_SUNSHINE_HOME/Libs:$LD_LIBRARY_PATH
         libdmasmm.so => /home/lzl/HappySunshine/Libs/libdmasmm.so (0x00007f81b5db8000)
         libdmdfs.so => /home/lzl/HappySunshine/Libs/libdmdfs.so (0x00007f81b5b92000)
 ```
+### （5）HsPgUnload
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ldd HsPgUnload 
+        linux-vdso.so.1 =>  (0x00007ffd0114b000)
+        libPublic.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libPublic.so (0x00007f6ca9f69000)
+        libLog.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libLog.so (0x00007f6ca9d63000)
+        libPthread.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libPthread.so (0x00007f6ca9b58000)
+        libPgReadData.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libPgReadData.so (0x00007f6ca9921000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f6ca9705000)
+        libDataConvertion.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libDataConvertion.so (0x00007f6ca9500000)
+        libFileOperate.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libFileOperate.so (0x00007f6ca92f7000)
+        libHashTable.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libHashTable.so (0x00007f6ca90f0000)
+        libTree.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libTree.so (0x00007f6ca8edf000)
+        libLinkList.so => /opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/Cmake/Libs/libLinkList.so (0x00007f6ca8cd4000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f6ca8906000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f6caa16c000)
+```
 如果有动态库没有找到，就要看看环境变量是否配置正确或是否生效。
 
 如果是安装包中缺少动态库，可以留言告知。
@@ -708,7 +725,7 @@ ConnInfo      : '192.168.142.12;SYSDBA;SYSDBA;;5238;1;'
 MigrationDb   : 'zxj;'                                           //库级迁移参数，单个数据库名长度限制29，需要迁移的数据库名。
 ```
 
-# 十、性能对比测试
+# 十、在线迁移性能对比测试
 和开源ETL工具Kettle进行对比测试。<br>由于本人测试条件有限（所有的数据库和工具都部署在一个虚机里），如果大家有条件可以在性能更好的环境下测试，迁移效率肯定会比下面的结果更好。
 ## 1、性能测试对比表格
 工具名\迁移项（单位：行/秒）|Gbase8a -> Gbase8a|PostgreSql -> Gbase8a|PostgreSql -> Dm
@@ -810,3 +827,75 @@ LOAD
 ### （3）Gbase8a-> Gbase8a
 ![INSERT](https://i-blog.csdnimg.cn/direct/194d48037d15427f99f9b481b94164c1.png)
 测试步骤大家可以参考之前写的博客《[Kettle-学习-01-Gbase8a迁移至Gbase8a](https://blog.csdn.net/qq_45111959/article/details/144428396?spm=1001.2014.3001.5502)》
+
+# 十一、离线抽取功能介绍
+## 1、单库级抽取示例
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 '*' '*'
+2026-05-17 14:04:52.051262-P[54440]-T[54440]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : '*', Tab : '*'.
+2026-05-17 14:04:52.052235-P[54440]-T[54440]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
+2026-05-17 14:04:52.052351-P[54440]-T[54440]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
+2026-05-17 14:04:52.081777-P[54440]-T[54440]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
+2026-05-17 14:04:52.084274-P[54440]-T[54440]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
+2026-05-17 14:04:52.084389-P[54440]-T[54440]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-05-17 14:04:52.086564-P[54440]-T[54440]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.002 (s.ms).
+2026-05-17 14:04:52.086826-P[54440]-T[54440]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-05-17 14:04:52.086903-P[54440]-T[54440]-[Info ]-CllPrint           : 
+[ ('public' ,'czg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'sun' ),('public' ,'xxx' ) ]
+[ ('public' ,'zxj' ),('sun' ,'sun' ) ]
+2026-05-17 14:04:52.109993-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : sun            , Tab : sun                 , Time :     0.023 (s.ms).
+2026-05-17 14:04:52.110816-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
+2026-05-17 14:04:53.525834-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     1.414 (s.ms).
+2026-05-17 14:04:53.595122-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.069 (s.ms).
+2026-05-17 14:04:53.611284-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.016 (s.ms).
+2026-05-17 14:04:53.611441-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-05-17 14:04:53.612363-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-05-17 14:04:53.628183-P[54440]-T[54440]-[Info ]-main               : OK, Task completed, Time :     1.576 (s.ms).
+```
+
+## 2、模式级抽取示例
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' '*'
+2026-05-17 14:10:42.046029-P[54788]-T[54788]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : '*'.
+2026-05-17 14:10:42.046908-P[54788]-T[54788]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
+2026-05-17 14:10:42.047100-P[54788]-T[54788]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
+2026-05-17 14:10:42.072514-P[54788]-T[54788]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
+2026-05-17 14:10:42.075413-P[54788]-T[54788]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
+2026-05-17 14:10:42.075532-P[54788]-T[54788]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-05-17 14:10:42.077850-P[54788]-T[54788]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.002 (s.ms).
+2026-05-17 14:10:42.078068-P[54788]-T[54788]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-05-17 14:10:42.078114-P[54788]-T[54788]-[Info ]-CllPrint           : 
+[ ('public' ,'czg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'sun' ),('public' ,'xxx' ) ]
+[ ('public' ,'zxj' ) ]
+2026-05-17 14:10:42.078216-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
+2026-05-17 14:10:43.491535-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     1.413 (s.ms).
+2026-05-17 14:10:43.555579-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.063 (s.ms).
+2026-05-17 14:10:43.574203-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.018 (s.ms).
+2026-05-17 14:10:43.574326-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-05-17 14:10:43.575292-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-05-17 14:10:43.585996-P[54788]-T[54788]-[Info ]-main               : OK, Task completed, Time :     1.540 (s.ms).
+```
+
+## 3、表级抽取示例
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'sun'
+2026-05-17 14:11:39.153808-P[54844]-T[54844]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : 'sun'.
+2026-05-17 14:11:39.154480-P[54844]-T[54844]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
+2026-05-17 14:11:39.154556-P[54844]-T[54844]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
+2026-05-17 14:11:39.177704-P[54844]-T[54844]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
+2026-05-17 14:11:39.179965-P[54844]-T[54844]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
+2026-05-17 14:11:39.180069-P[54844]-T[54844]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-05-17 14:11:39.182070-P[54844]-T[54844]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.001 (s.ms).
+2026-05-17 14:11:39.182285-P[54844]-T[54844]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-05-17 14:11:39.182338-P[54844]-T[54844]-[Info ]-CllPrint           : 
+[ ('public' ,'sun' ) ]
+2026-05-17 14:11:39.200323-P[54844]-T[54844]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.017 (s.ms).
+2026-05-17 14:11:39.215802-P[54844]-T[54844]-[Info ]-main               : OK, Task completed, Time :     0.062 (s.ms).
+```
+
+# 十二、许可证
+版本|限制
+--- | ---
+Free	|1、单表数据文件大小小于100MB。
+2、免费使用一年，续期请联系作者。
+Pro	|无限制，需相应许可请联系作者。
