@@ -7,17 +7,18 @@ CPU	| Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz
 操作系统	| CentOS Linux release 7.9.2009 (Core)
 内存	| 5G
 逻辑核数	| 6
-HappySunshine版本|V1.5
+HappySunshine版本|V1.6
 Kettle版本|pdi-ce-9.5.0.1-261
 Gbase8a版本|8.6.2-R43.34.27468a27
-Pg版本|PostgreSQL 16.3
+Pg版本|PostgreSQL 14.5
 DM版本|1          DM Database Server 64 V8<br>2          DB Version: 0x7000c<br>3          03134284194-20240703-234060-20108<br>4          Msg Version: 12<br>5          Gsu level(5) cnt: 0
 
 # 二、简述
 ![HS Logo](https://i-blog.csdnimg.cn/direct/46434485de454704bc21de782bc4220d.png)
-<br>HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
+<br>HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步、数据离线抽取等，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
 
 # 三、架构图
+## 1、在线迁移
 ![HS](https://i-blog.csdnimg.cn/blog_migrate/69fb8c4716412dde87e34b76eadb2bb8.png)
 
 画图水平感觉还不错，给自己点个赞。
@@ -59,6 +60,10 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 17、执行者进程等待所有的消费者、生产者结束后，回收线程池资源，释放自身所占用资源，结束退出。
 
 18、管理者进程等待所有执行者进程结束后，回收进程资源，释放自身所占用资源，结束退出。
+
+## 2、离线抽取
+
+PG数据离线抽取功能是一个单进程单线程的程序，解析流程如上。
 
 # 四、升级点
 序号|名称|备注
