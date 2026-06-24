@@ -831,80 +831,485 @@ LOAD
 测试步骤大家可以参考之前写的博客《[Kettle-学习-01-Gbase8a迁移至Gbase8a](https://blog.csdn.net/qq_45111959/article/details/144428396?spm=1001.2014.3001.5502)》
 
 # 十一、离线抽取功能介绍
-## 1、单库级抽取示例
+## 1、功能展示
+### （1）单库级抽取示例
 ```
-[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 '*' '*'
-2026-05-17 14:04:52.051262-P[54440]-T[54440]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : '*', Tab : '*'.
-2026-05-17 14:04:52.052235-P[54440]-T[54440]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
-2026-05-17 14:04:52.052351-P[54440]-T[54440]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
-2026-05-17 14:04:52.081777-P[54440]-T[54440]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
-2026-05-17 14:04:52.084274-P[54440]-T[54440]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
-2026-05-17 14:04:52.084389-P[54440]-T[54440]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
-2026-05-17 14:04:52.086564-P[54440]-T[54440]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.002 (s.ms).
-2026-05-17 14:04:52.086826-P[54440]-T[54440]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
-2026-05-17 14:04:52.086903-P[54440]-T[54440]-[Info ]-CllPrint           : 
-[ ('public' ,'czg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'sun' ),('public' ,'xxx' ) ]
-[ ('public' ,'zxj' ),('sun' ,'sun' ) ]
-2026-05-17 14:04:52.109993-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : sun            , Tab : sun                 , Time :     0.023 (s.ms).
-2026-05-17 14:04:52.110816-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
-2026-05-17 14:04:53.525834-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     1.414 (s.ms).
-2026-05-17 14:04:53.595122-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.069 (s.ms).
-2026-05-17 14:04:53.611284-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.016 (s.ms).
-2026-05-17 14:04:53.611441-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
-2026-05-17 14:04:53.612363-P[54440]-T[54440]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
-2026-05-17 14:04:53.628183-P[54440]-T[54440]-[Info ]-main               : OK, Task completed, Time :     1.576 (s.ms).
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 '*' '*' 3 2
+2026-06-22 20:55:31.460275-P[131021]-T[131021]-[Info ]-HsLogo             : 
+ █░  █░  ███░  ████░  ████░  █░    █░  ███░  █░  █░ █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ █░  █░ █░  █░ █░  █░ █░  █░  █░  █░  █░  █░ █░  █░ ██░ █░ █░  █░ █░  █░  █░ ██░ █░ █░    
+ █░  █░ █░  █░ █░  █░ █░  █░   █░█░   █░     █░  █░ █░█░█░ █░     █░  █░  █░ █░█░█░ █░    
+ █████░ █████░ ████░  ████░     █░     ███░  █░  █░ █░ ██░  ███░  █████░  █░ █░ ██░ ████░ 
+ █░  █░ █░  █░ █░     █░        █░        █░ █░  █░ █░  █░     █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░    █░  █░ █░  █░ █░  █░ █░  █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░     ███░   ███░  █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ 
+Contact Information:
+     1.QQ     : 2263143197 
+     2.WeChat : Ldqczgsun 
+     3.Email  : 2263143197@qq.com 
+     4.Github : https://github.com/lxgczg/HappySunshine 
+     5.CSDN   : https://blog.csdn.net/qq_45111959?type=lately 
+
+2026-06-22 20:55:31.461033-P[131021]-T[131021]-[Info ]-HsLicCheck         : OK, Version : 'HappySunshineV1.7', Flag : 'Pro', ExpireTime : '2027-05-17'.
+2026-06-22 20:55:31.461056-P[131021]-T[131021]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UnloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : '*', Tab : '*', WkrNums : 3, LOG_LEVEL : 'Info '.
+2026-06-22 20:55:31.461828-P[131021]-T[131021]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT, PgTypeMark : BT.
+2026-06-22 20:55:31.482150-P[131021]-T[131021]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 171368, PgAttrOid : 170960, PgTypeOid : 171261.
+2026-06-22 20:55:31.484813-P[131021]-T[131021]-[Info ]-PgTypeDecode       : OK, Sch : pg_catalog     , Tab : pg_type             , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.485987-P[131021]-T[131021]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.001 (s.ms).
+2026-06-22 20:55:31.486112-P[131021]-T[131021]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.491625-P[131021]-T[131021]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.005 (s.ms).
+2026-06-22 20:55:31.491928-P[131021]-T[131021]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.492032-P[131021]-T[131021]-[Info ]-CllPrint           : 
+[ ('public' ,'actor' ),('public' ,'address' ),('public' ,'blue' ),('public' ,'category' ),('public' ,'child' ) ]
+[ ('public' ,'city' ),('public' ,'clx' ),('public' ,'country' ),('public' ,'customer' ),('public' ,'czg' ) ]
+[ ('public' ,'father1' ),('public' ,'father2' ),('public' ,'father3' ),('public' ,'film_actor' ),('public' ,'film_category' ) ]
+[ ('public' ,'hstest' ),('public' ,'ice' ),('public' ,'inventory' ),('public' ,'language' ),('public' ,'ldq' ) ]
+[ ('public' ,'lxg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'orders_2024_q1' ),('public' ,'orders_2024_q2' ) ]
+[ ('public' ,'orders_2024_q3' ),('public' ,'orders_2024_q4' ),('public' ,'orders_range' ),('public' ,'payment' ),('public' ,'payment_p2022_01' ) ]
+[ ('public' ,'payment_p2022_02' ),('public' ,'payment_p2022_03' ),('public' ,'payment_p2022_04' ),('public' ,'payment_p2022_05' ),('public' ,'payment_p2022_06' ) ]
+[ ('public' ,'payment_p2022_07' ),('public' ,'pgbench_accounts' ),('public' ,'pgbench_branches' ),('public' ,'pgbench_history' ),('public' ,'pgbench_tellers' ) ]
+[ ('public' ,'rental' ),('public' ,'staff' ),('public' ,'store' ),('public' ,'sun' ),('public' ,'sun1' ) ]
+[ ('public' ,'xxx' ),('public' ,'yyy' ),('public' ,'zxj' ),('sun' ,'sun' ) ]
+2026-06-22 20:55:31.492161-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : actor               , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.493198-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : actor               , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.493375-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : address             , Time :     0.000 (s.ms).
+2026-06-22 20:55:31.494652-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : address             , Time :     0.001 (s.ms).
+2026-06-22 20:55:31.494686-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : blue                , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.060623-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : blue                , Time :     1.565 (s.ms).
+2026-06-22 20:55:33.060698-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : category            , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.156546-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : category            , Time :     0.095 (s.ms).
+2026-06-22 20:55:33.156625-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : child               , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.158109-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : child               , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.158183-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : city                , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.158938-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : city                , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.158980-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : clx                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.350180-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : clx                 , Time :     0.191 (s.ms).
+2026-06-22 20:55:33.350259-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : country             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.352747-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : country             , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.352793-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : customer            , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.353933-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : customer            , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.353994-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.354544-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.354570-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father1             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.356360-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father1             , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.356416-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father2             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.356760-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father2             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.356800-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father3             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.357053-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father3             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.357089-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : film_actor          , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.360446-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : film_actor          , Time :     0.003 (s.ms).
+2026-06-22 20:55:33.360502-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : film_category       , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.367365-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : film_category       , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.367427-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : hstest              , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.368349-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : hstest              , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.368432-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : ice                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.369799-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : ice                 , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.369858-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : inventory           , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.373047-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : inventory           , Time :     0.003 (s.ms).
+2026-06-22 20:55:33.373104-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : language            , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.374435-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : language            , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.374506-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : ldq                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375055-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : ldq                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375127-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : lxg                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375415-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lxg                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375444-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375644-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.375797-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : moon                , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.430496-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.054 (s.ms).
+2026-06-22 20:55:33.430589-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q1      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.431294-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q1      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.431351-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q2      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.432611-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q2      , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.432648-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q3      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.433335-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q3      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.433373-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q4      , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.435060-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q4      , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.435084-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_range        , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.435107-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_range        , Partitioned main table does not store data, and sub-tables will be parsed normally.
+2026-06-22 20:55:33.435115-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment             , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.435125-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment             , Partitioned main table does not store data, and sub-tables will be parsed normally.
+2026-06-22 20:55:33.435131-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_01    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.435893-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_01    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.435930-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_02    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.437246-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_02    , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.437304-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_03    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.440713-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_03    , Time :     0.003 (s.ms).
+2026-06-22 20:55:33.440793-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_04    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.443292-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_04    , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.443334-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_05    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.446033-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_05    , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.446068-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_06    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.448764-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_06    , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.448865-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_07    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.451110-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_07    , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.451155-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.899881-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.448 (s.ms).
+2026-06-22 20:55:33.899949-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_branches    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.900217-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_branches    , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.900249-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_history     , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.900538-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_history     , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.900593-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_tellers     , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.901082-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_tellers     , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.901134-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : rental              , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.922160-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : rental              , Time :     0.020 (s.ms).
+2026-06-22 20:55:33.922210-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : staff               , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.924641-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : staff               , Time :     0.002 (s.ms).
+2026-06-22 20:55:33.924845-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : store               , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.926048-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : store               , Time :     0.001 (s.ms).
+2026-06-22 20:55:33.926137-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : sun                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.934825-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.008 (s.ms).
+2026-06-22 20:55:33.934939-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : sun1                , Time :     0.000 (s.ms).
+2026-06-22 20:55:33.950466-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun1                , Time :     0.015 (s.ms).
+2026-06-22 20:55:33.950748-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : xxx                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:34.361543-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     0.410 (s.ms).
+2026-06-22 20:55:34.361627-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : yyy                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:34.406950-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : yyy                 , Time :     0.045 (s.ms).
+2026-06-22 20:55:34.407031-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:34.408488-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.001 (s.ms).
+2026-06-22 20:55:34.408594-P[131021]-T[131021]-[Info ]-PgTabDef           : OK, Sch : sun            , Tab : sun                 , Time :     0.000 (s.ms).
+2026-06-22 20:55:34.445364-P[131021]-T[131021]-[Info ]-PgTabDecode        : OK, Sch : sun            , Tab : sun                 , Time :     0.036 (s.ms).
+2026-06-22 20:55:36.487934-P[131021]-T[131021]-[Info ]-main               : OK, Task completed, Time :     5.027 (s.ms).
 ```
 
-## 2、模式级抽取示例
+### （2）模式级抽取示例
 ```
-[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' '*'
-2026-05-17 14:10:42.046029-P[54788]-T[54788]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : '*'.
-2026-05-17 14:10:42.046908-P[54788]-T[54788]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
-2026-05-17 14:10:42.047100-P[54788]-T[54788]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
-2026-05-17 14:10:42.072514-P[54788]-T[54788]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
-2026-05-17 14:10:42.075413-P[54788]-T[54788]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
-2026-05-17 14:10:42.075532-P[54788]-T[54788]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
-2026-05-17 14:10:42.077850-P[54788]-T[54788]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.002 (s.ms).
-2026-05-17 14:10:42.078068-P[54788]-T[54788]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
-2026-05-17 14:10:42.078114-P[54788]-T[54788]-[Info ]-CllPrint           : 
-[ ('public' ,'czg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'sun' ),('public' ,'xxx' ) ]
-[ ('public' ,'zxj' ) ]
-2026-05-17 14:10:42.078216-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
-2026-05-17 14:10:43.491535-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     1.413 (s.ms).
-2026-05-17 14:10:43.555579-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.063 (s.ms).
-2026-05-17 14:10:43.574203-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.018 (s.ms).
-2026-05-17 14:10:43.574326-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
-2026-05-17 14:10:43.575292-P[54788]-T[54788]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
-2026-05-17 14:10:43.585996-P[54788]-T[54788]-[Info ]-main               : OK, Task completed, Time :     1.540 (s.ms).
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' '*' 3 2
+2026-06-22 20:56:28.313436-P[478]-T[478]-[Info ]-HsLogo             : 
+ █░  █░  ███░  ████░  ████░  █░    █░  ███░  █░  █░ █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ █░  █░ █░  █░ █░  █░ █░  █░  █░  █░  █░  █░ █░  █░ ██░ █░ █░  █░ █░  █░  █░ ██░ █░ █░    
+ █░  █░ █░  █░ █░  █░ █░  █░   █░█░   █░     █░  █░ █░█░█░ █░     █░  █░  █░ █░█░█░ █░    
+ █████░ █████░ ████░  ████░     █░     ███░  █░  █░ █░ ██░  ███░  █████░  █░ █░ ██░ ████░ 
+ █░  █░ █░  █░ █░     █░        █░        █░ █░  █░ █░  █░     █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░    █░  █░ █░  █░ █░  █░ █░  █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░     ███░   ███░  █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ 
+Contact Information:
+     1.QQ     : 2263143197 
+     2.WeChat : Ldqczgsun 
+     3.Email  : 2263143197@qq.com 
+     4.Github : https://github.com/lxgczg/HappySunshine 
+     5.CSDN   : https://blog.csdn.net/qq_45111959?type=lately 
+
+2026-06-22 20:56:28.314811-P[478]-T[478]-[Info ]-HsLicCheck         : OK, Version : 'HappySunshineV1.7', Flag : 'Pro', ExpireTime : '2027-05-17'.
+2026-06-22 20:56:28.314842-P[478]-T[478]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UnloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : '*', WkrNums : 3, LOG_LEVEL : 'Info '.
+2026-06-22 20:56:28.315963-P[478]-T[478]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT, PgTypeMark : BT.
+2026-06-22 20:56:28.336318-P[478]-T[478]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 171368, PgAttrOid : 170960, PgTypeOid : 171261.
+2026-06-22 20:56:28.339945-P[478]-T[478]-[Info ]-PgTypeDecode       : OK, Sch : pg_catalog     , Tab : pg_type             , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.341137-P[478]-T[478]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.001 (s.ms).
+2026-06-22 20:56:28.341242-P[478]-T[478]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.347241-P[478]-T[478]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.005 (s.ms).
+2026-06-22 20:56:28.347610-P[478]-T[478]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.347715-P[478]-T[478]-[Info ]-CllPrint           : 
+[ ('public' ,'actor' ),('public' ,'address' ),('public' ,'blue' ),('public' ,'category' ),('public' ,'child' ) ]
+[ ('public' ,'city' ),('public' ,'clx' ),('public' ,'country' ),('public' ,'customer' ),('public' ,'czg' ) ]
+[ ('public' ,'father1' ),('public' ,'father2' ),('public' ,'father3' ),('public' ,'film_actor' ),('public' ,'film_category' ) ]
+[ ('public' ,'hstest' ),('public' ,'ice' ),('public' ,'inventory' ),('public' ,'language' ),('public' ,'ldq' ) ]
+[ ('public' ,'lxg' ),('public' ,'lzl' ),('public' ,'moon' ),('public' ,'orders_2024_q1' ),('public' ,'orders_2024_q2' ) ]
+[ ('public' ,'orders_2024_q3' ),('public' ,'orders_2024_q4' ),('public' ,'orders_range' ),('public' ,'payment' ),('public' ,'payment_p2022_01' ) ]
+[ ('public' ,'payment_p2022_02' ),('public' ,'payment_p2022_03' ),('public' ,'payment_p2022_04' ),('public' ,'payment_p2022_05' ),('public' ,'payment_p2022_06' ) ]
+[ ('public' ,'payment_p2022_07' ),('public' ,'pgbench_accounts' ),('public' ,'pgbench_branches' ),('public' ,'pgbench_history' ),('public' ,'pgbench_tellers' ) ]
+[ ('public' ,'rental' ),('public' ,'staff' ),('public' ,'store' ),('public' ,'sun' ),('public' ,'sun1' ) ]
+[ ('public' ,'xxx' ),('public' ,'yyy' ),('public' ,'zxj' ) ]
+2026-06-22 20:56:28.347913-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : actor               , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.348757-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : actor               , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.348791-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : address             , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.349608-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : address             , Time :     0.000 (s.ms).
+2026-06-22 20:56:28.349653-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : blue                , Time :     0.000 (s.ms).
+2026-06-22 20:56:29.930696-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : blue                , Time :     1.580 (s.ms).
+2026-06-22 20:56:29.930797-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : category            , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.016452-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : category            , Time :     0.085 (s.ms).
+2026-06-22 20:56:30.016665-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : child               , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.017093-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : child               , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.017125-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : city                , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.018496-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : city                , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.018551-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : clx                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.230268-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : clx                 , Time :     0.211 (s.ms).
+2026-06-22 20:56:30.230379-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : country             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.232766-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : country             , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.232808-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : customer            , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.234077-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : customer            , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.234099-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.234838-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : czg                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.234871-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father1             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.235133-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father1             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.235161-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father2             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.235784-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father2             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.235833-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : father3             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.236269-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : father3             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.236322-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : film_actor          , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.238566-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : film_actor          , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.238607-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : film_category       , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.245393-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : film_category       , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.245468-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : hstest              , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.252688-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : hstest              , Time :     0.007 (s.ms).
+2026-06-22 20:56:30.252803-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : ice                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.253368-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : ice                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.253433-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : inventory           , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.257154-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : inventory           , Time :     0.003 (s.ms).
+2026-06-22 20:56:30.257210-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : language            , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.257739-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : language            , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.257813-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : ldq                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.258585-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : ldq                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.258678-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : lxg                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.259666-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lxg                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.259699-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.260335-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : lzl                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.260400-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : moon                , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.322566-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : moon                , Time :     0.062 (s.ms).
+2026-06-22 20:56:30.322656-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q1      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.323306-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q1      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.323358-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q2      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.323898-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q2      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.323945-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q3      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.324535-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q3      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.324559-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_2024_q4      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.325332-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_2024_q4      , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.325388-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : orders_range        , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.325434-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : orders_range        , Partitioned main table does not store data, and sub-tables will be parsed normally.
+2026-06-22 20:56:30.325449-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment             , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.325468-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment             , Partitioned main table does not store data, and sub-tables will be parsed normally.
+2026-06-22 20:56:30.325484-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_01    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.328100-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_01    , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.328206-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_02    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.331016-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_02    , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.331100-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_03    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.334864-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_03    , Time :     0.003 (s.ms).
+2026-06-22 20:56:30.334957-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_04    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.336858-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_04    , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.336922-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_05    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.339673-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_05    , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.339826-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_06    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.342433-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_06    , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.342486-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : payment_p2022_07    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.343636-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : payment_p2022_07    , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.343680-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.790608-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.446 (s.ms).
+2026-06-22 20:56:30.790684-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_branches    , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.793024-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_branches    , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.793099-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_history     , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.793970-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_history     , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.794043-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_tellers     , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.796595-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_tellers     , Time :     0.002 (s.ms).
+2026-06-22 20:56:30.796707-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : rental              , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.816901-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : rental              , Time :     0.020 (s.ms).
+2026-06-22 20:56:30.817199-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : staff               , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.821627-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : staff               , Time :     0.004 (s.ms).
+2026-06-22 20:56:30.821702-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : store               , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.823582-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : store               , Time :     0.001 (s.ms).
+2026-06-22 20:56:30.823673-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : sun                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.831629-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.007 (s.ms).
+2026-06-22 20:56:30.831752-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : sun1                , Time :     0.000 (s.ms).
+2026-06-22 20:56:30.844659-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun1                , Time :     0.012 (s.ms).
+2026-06-22 20:56:30.844906-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : xxx                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:31.234882-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : xxx                 , Time :     0.389 (s.ms).
+2026-06-22 20:56:31.235033-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : yyy                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:31.275336-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : yyy                 , Time :     0.040 (s.ms).
+2026-06-22 20:56:31.275492-P[478]-T[478]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : zxj                 , Time :     0.000 (s.ms).
+2026-06-22 20:56:31.276592-P[478]-T[478]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : zxj                 , Time :     0.001 (s.ms).
+2026-06-22 20:56:33.314427-P[478]-T[478]-[Info ]-main               : OK, Task completed, Time :     5.001 (s.ms).
 ```
 
-## 3、表级抽取示例
+### （3）表级抽取示例
 ```
-[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'sun'
-2026-05-17 14:11:39.153808-P[54844]-T[54844]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : 'sun'.
-2026-05-17 14:11:39.154480-P[54844]-T[54844]-[Info ]-HsLicCheck         : OK, Ver : 'HappySunshineV1.6', Flag : 'Free', BaseTime : '2026-05-17', ExpireTime : '2027-05-17'.
-2026-05-17 14:11:39.154556-P[54844]-T[54844]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT.
-2026-05-17 14:11:39.177704-P[54844]-T[54844]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 72582, PgAttrOid : 72217.
-2026-05-17 14:11:39.179965-P[54844]-T[54844]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
-2026-05-17 14:11:39.180069-P[54844]-T[54844]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
-2026-05-17 14:11:39.182070-P[54844]-T[54844]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.001 (s.ms).
-2026-05-17 14:11:39.182285-P[54844]-T[54844]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
-2026-05-17 14:11:39.182338-P[54844]-T[54844]-[Info ]-CllPrint           : 
-[ ('public' ,'sun' ) ]
-2026-05-17 14:11:39.200323-P[54844]-T[54844]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : sun                 , Time :     0.017 (s.ms).
-2026-05-17 14:11:39.215802-P[54844]-T[54844]-[Info ]-main               : OK, Task completed, Time :     0.062 (s.ms).
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'blue' 3 2
+2026-06-22 20:58:52.076436-P[576]-T[576]-[Info ]-HsLogo             : 
+ █░  █░  ███░  ████░  ████░  █░    █░  ███░  █░  █░ █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ █░  █░ █░  █░ █░  █░ █░  █░  █░  █░  █░  █░ █░  █░ ██░ █░ █░  █░ █░  █░  █░ ██░ █░ █░    
+ █░  █░ █░  █░ █░  █░ █░  █░   █░█░   █░     █░  █░ █░█░█░ █░     █░  █░  █░ █░█░█░ █░    
+ █████░ █████░ ████░  ████░     █░     ███░  █░  █░ █░ ██░  ███░  █████░  █░ █░ ██░ ████░ 
+ █░  █░ █░  █░ █░     █░        █░        █░ █░  █░ █░  █░     █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░    █░  █░ █░  █░ █░  █░ █░  █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░     ███░   ███░  █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ 
+Contact Information:
+     1.QQ     : 2263143197 
+     2.WeChat : Ldqczgsun 
+     3.Email  : 2263143197@qq.com 
+     4.Github : https://github.com/lxgczg/HappySunshine 
+     5.CSDN   : https://blog.csdn.net/qq_45111959?type=lately 
+
+2026-06-22 20:58:52.077187-P[576]-T[576]-[Info ]-HsLicCheck         : OK, Version : 'HappySunshineV1.7', Flag : 'Pro', ExpireTime : '2027-05-17'.
+2026-06-22 20:58:52.077198-P[576]-T[576]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UnloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : 'blue', WkrNums : 3, LOG_LEVEL : 'Info '.
+2026-06-22 20:58:52.077902-P[576]-T[576]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT, PgTypeMark : BT.
+2026-06-22 20:58:52.096721-P[576]-T[576]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 171368, PgAttrOid : 170960, PgTypeOid : 171261.
+2026-06-22 20:58:52.100531-P[576]-T[576]-[Info ]-PgTypeDecode       : OK, Sch : pg_catalog     , Tab : pg_type             , Time :     0.000 (s.ms).
+2026-06-22 20:58:52.101681-P[576]-T[576]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.001 (s.ms).
+2026-06-22 20:58:52.101748-P[576]-T[576]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-06-22 20:58:52.107228-P[576]-T[576]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.005 (s.ms).
+2026-06-22 20:58:52.107556-P[576]-T[576]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-06-22 20:58:52.107632-P[576]-T[576]-[Info ]-CllPrint           : 
+[ ('public' ,'blue' ) ]
+2026-06-22 20:58:52.107770-P[576]-T[576]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : blue                , Time :     0.000 (s.ms).
+2026-06-22 20:58:53.610242-P[576]-T[576]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : blue                , Time :     1.502 (s.ms).
+2026-06-22 20:58:55.626078-P[576]-T[576]-[Info ]-main               : OK, Task completed, Time :     3.549 (s.ms).
 ```
 
-## 4、数据加载示例
+### （4）数据加载示例
 ```
 COPY MOON FROM '/home/czg/TestPgData/public_sun.txt' WITH (FORMAT CSV,DELIMITER '|',NULL '',QUOTE '"',ESCAPE '\');
 ```
+​
+### （5）抽取的表定义展示
+```
+
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# cat /home/czg/TestPgData/PG_DDL.txt
+CREATE TABLE public.pgbench_accounts 
+(
+"aid" INT NOT NULL,
+"bid" INT,
+"abalance" INT,
+"filler" CHAR(84)
+);
+```
+
+### （6）抽取的数据展示
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# tail -10f /home/czg/TestPgData/public_pgbench_accounts/public_pgbench_accounts.txt_0
+999991|10|0|                                                                                    
+999992|10|0|                                                                                    
+999993|10|0|                                                                                    
+999994|10|0|                                                                                    
+999995|10|0|                                                                                    
+999996|10|0|                                                                                    
+999997|10|0|                                                                                    
+999998|10|0|                                                                                    
+999999|10|0|                                                                                    
+1000000|10|0|
+```
+
+### （7）库内查询展示
+```
+postgres=# SELECT * FROM pgbench_accounts WHERE AID >= 999991 ORDER BY AID LIMIT 10;
+   aid   | bid | abalance |                                        filler                                        
+---------+-----+----------+--------------------------------------------------------------------------------------
+  999991 |  10 |        0 |                                                                                     
+  999992 |  10 |        0 |                                                                                     
+  999993 |  10 |        0 |                                                                                     
+  999994 |  10 |        0 |                                                                                     
+  999995 |  10 |        0 |                                                                                     
+  999996 |  10 |        0 |                                                                                     
+  999997 |  10 |        0 |                                                                                     
+  999998 |  10 |        0 |                                                                                     
+  999999 |  10 |        0 |                                                                                     
+ 1000000 |  10 |        0 |                                                                                     
+(10 rows)
+```
+
+## 2、性能展示
+### （1）表结构
+```
+postgres=# \d pgbench_accounts
+              Table "public.pgbench_accounts"
+  Column  |     Type      | Collation | Nullable | Default 
+----------+---------------+-----------+----------+---------
+ aid      | integer       |           | not null | 
+ bid      | integer       |           |          | 
+ abalance | integer       |           |          | 
+ filler   | character(84) |           |          | 
+Indexes:
+    "pgbench_accounts_pkey" PRIMARY KEY, btree (aid)
+```
+
+### （2）数据量
+```
+postgres=# SELECT COUNT(*) FROM pgbench_accounts;
+  count  
+---------
+ 1000000
+(1 row)
+```
+
+### （3）单线程离线抽取
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'pgbench_accounts' 1 2
+2026-06-23 20:58:06.112844-P[64814]-T[64814]-[Info ]-HsLogo             : 
+ █░  █░  ███░  ████░  ████░  █░    █░  ███░  █░  █░ █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ █░  █░ █░  █░ █░  █░ █░  █░  █░  █░  █░  █░ █░  █░ ██░ █░ █░  █░ █░  █░  █░ ██░ █░ █░    
+ █░  █░ █░  █░ █░  █░ █░  █░   █░█░   █░     █░  █░ █░█░█░ █░     █░  █░  █░ █░█░█░ █░    
+ █████░ █████░ ████░  ████░     █░     ███░  █░  █░ █░ ██░  ███░  █████░  █░ █░ ██░ ████░ 
+ █░  █░ █░  █░ █░     █░        █░        █░ █░  █░ █░  █░     █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░    █░  █░ █░  █░ █░  █░ █░  █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░     ███░   ███░  █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ 
+Contact Information:
+     1.QQ     : 2263143197 
+     2.WeChat : Ldqczgsun 
+     3.Email  : 2263143197@qq.com 
+     4.Github : https://github.com/lxgczg/HappySunshine 
+     5.CSDN   : https://blog.csdn.net/qq_45111959?type=lately 
+
+2026-06-23 20:58:06.114343-P[64814]-T[64814]-[Info ]-HsLicCheck         : OK, Version : 'HappySunshineV1.7', Flag : 'Pro', ExpireTime : '2027-05-17'.
+2026-06-23 20:58:06.114373-P[64814]-T[64814]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UnloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : 'pgbench_accounts', WkrNums : 1, LOG_LEVEL : 'Info '.
+2026-06-23 20:58:06.114863-P[64814]-T[64814]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT, PgTypeMark : BT.
+2026-06-23 20:58:06.140936-P[64814]-T[64814]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 171368, PgAttrOid : 170960, PgTypeOid : 171261.
+2026-06-23 20:58:06.145296-P[64814]-T[64814]-[Info ]-PgTypeDecode       : OK, Sch : pg_catalog     , Tab : pg_type             , Time :     0.000 (s.ms).
+2026-06-23 20:58:06.146163-P[64814]-T[64814]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.000 (s.ms).
+2026-06-23 20:58:06.146242-P[64814]-T[64814]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-06-23 20:58:06.152375-P[64814]-T[64814]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.006 (s.ms).
+2026-06-23 20:58:06.152603-P[64814]-T[64814]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-06-23 20:58:06.152658-P[64814]-T[64814]-[Info ]-CllPrint           : 
+[ ('public' ,'pgbench_accounts' ) ]
+2026-06-23 20:58:06.152741-P[64814]-T[64814]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.000 (s.ms).
+2026-06-23 20:58:07.426099-P[64814]-T[64814]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_accounts    , Time :     1.273 (s.ms).
+2026-06-23 20:58:08.126278-P[64814]-T[64814]-[Info ]-main               : OK, Task completed, Time :     2.013 (s.ms).
+```
+解析需1.273 (s.ms)。
+
+### （4）多线程离线抽取
+```
+[root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'pgbench_accounts' 4 2
+2026-06-23 20:59:54.347337-P[65092]-T[65092]-[Info ]-HsLogo             : 
+ █░  █░  ███░  ████░  ████░  █░    █░  ███░  █░  █░ █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ █░  █░ █░  █░ █░  █░ █░  █░  █░  █░  █░  █░ █░  █░ ██░ █░ █░  █░ █░  █░  █░ ██░ █░ █░    
+ █░  █░ █░  █░ █░  █░ █░  █░   █░█░   █░     █░  █░ █░█░█░ █░     █░  █░  █░ █░█░█░ █░    
+ █████░ █████░ ████░  ████░     █░     ███░  █░  █░ █░ ██░  ███░  █████░  █░ █░ ██░ ████░ 
+ █░  █░ █░  █░ █░     █░        █░        █░ █░  █░ █░  █░     █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░    █░  █░ █░  █░ █░  █░ █░  █░ █░  █░  █░ █░  █░ █░    
+ █░  █░ █░  █░ █░     █░        █░     ███░   ███░  █░  █░  ███░  █░  █░  █░ █░  █░ █████░
+ 
+Contact Information:
+     1.QQ     : 2263143197 
+     2.WeChat : Ldqczgsun 
+     3.Email  : 2263143197@qq.com 
+     4.Github : https://github.com/lxgczg/HappySunshine 
+     5.CSDN   : https://blog.csdn.net/qq_45111959?type=lately 
+
+2026-06-23 20:59:54.348102-P[65092]-T[65092]-[Info ]-HsLicCheck         : OK, Version : 'HappySunshineV1.7', Flag : 'Pro', ExpireTime : '2027-05-17'.
+2026-06-23 20:59:54.348126-P[65092]-T[65092]-[Info ]-main               : OK, DataDir : '/opt/Pg14-5/Data/base/13892/', UnloadDir : '/home/czg/TestPgData/', PageSize : 8192, Sch : 'public', Tab : 'pgbench_accounts', WkrNums : 4, LOG_LEVEL : 'Info '.
+2026-06-23 20:59:54.349238-P[65092]-T[65092]-[Info ]-PgGlbEnvInit       : OK, WritePages : 2, WriteBlockSize : 8192, PgSchMark : BT, PgClassMark : BT, PgAttrMark : BT, PgEnumMark : BT, PgTypeMark : BT.
+2026-06-23 20:59:54.373733-P[65092]-T[65092]-[Info ]-PgFileNodeMap      : OK, FilePath : '/opt/Pg14-5/Data/base/13892/pg_filenode.map', num_mappings : 17, PgClassOid : 171368, PgAttrOid : 170960, PgTypeOid : 171261.
+2026-06-23 20:59:54.377481-P[65092]-T[65092]-[Info ]-PgTypeDecode       : OK, Sch : pg_catalog     , Tab : pg_type             , Time :     0.000 (s.ms).
+2026-06-23 20:59:54.378638-P[65092]-T[65092]-[Info ]-PgClassDecode      : OK, Sch : pg_catalog     , Tab : pg_class            , Time :     0.001 (s.ms).
+2026-06-23 20:59:54.378743-P[65092]-T[65092]-[Info ]-PgSchDecode        : OK, Sch : pg_catalog     , Tab : pg_namespace        , Time :     0.000 (s.ms).
+2026-06-23 20:59:54.383320-P[65092]-T[65092]-[Info ]-PgAttrDecode       : OK, Sch : pg_catalog     , Tab : pg_attribute        , Time :     0.004 (s.ms).
+2026-06-23 20:59:54.383667-P[65092]-T[65092]-[Info ]-PgEnumDecode       : OK, Sch : pg_catalog     , Tab : pg_enum             , Time :     0.000 (s.ms).
+2026-06-23 20:59:54.383737-P[65092]-T[65092]-[Info ]-CllPrint           : 
+[ ('public' ,'pgbench_accounts' ) ]
+2026-06-23 20:59:54.383857-P[65092]-T[65092]-[Info ]-PgTabDef           : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.000 (s.ms).
+2026-06-23 20:59:54.732528-P[65092]-T[65092]-[Info ]-PgTabDecode        : OK, Sch : public         , Tab : pgbench_accounts    , Time :     0.348 (s.ms).
+2026-06-23 20:59:56.741239-P[65092]-T[65092]-[Info ]-main               : OK, Task completed, Time :     2.393 (s.ms).
+```
+解析需0.348 (s.ms)。
+
+### （5）包含大字段、枚举表性能对比
+|包含大字段、枚举(s.ms)	|提升倍数
+--- | --- | ---
+单线程	        |4.472	|2.4
+多线程（3线程）	|1.830  |2.4
+
+### （6）不包含大字段、枚举表性能对比
+|不包含大字段、枚举(s.ms)	|提升倍数
+--- | --- | ---
+单线程	        |1.273	|3.6
+多线程（3线程）	|0.348  |3.6
+​
 
 # 十二、许可证
 版本|限制
 --- | ---
-Free	|1、单表数据文件大小小于100MB。<br>2、免费使用一年，续期请联系作者。
-Pro	|无限制，需相应许可请联系作者。
+Free	|1、单表数据文件大小小于100MB。<br>2、线程数最多支持2。<br>3、免费使用一年，续期请联系作者。
+Pro	    |功能上无限制，需相应许可请联系作者。
 
 # 十三、需求&Bug
 需提供如下内容：
