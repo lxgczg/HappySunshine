@@ -5,7 +5,7 @@ CPU	| Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz
 操作系统	| CentOS Linux release 7.9.2009 (Core)
 内存	| 5G
 逻辑核数	| 6
-HappySunshine版本|V1.6
+HappySunshine版本|V1.7
 Kettle版本|pdi-ce-9.5.0.1-261
 Gbase8a版本|8.6.2-R43.34.27468a27
 Pg版本|PostgreSQL 14.5
