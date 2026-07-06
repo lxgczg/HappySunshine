@@ -848,7 +848,7 @@ LOAD
 [root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'blue' 3 2
 ```
 
-### （4）数据加载示例
+### （4）COPY语句展示
 ```
 [root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# head /home/czg/TestPgData/PG_COPY.txt 
 
