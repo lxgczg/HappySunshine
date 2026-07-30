@@ -1037,7 +1037,6 @@ Contact Information:
 --- | --- | ---
 单线程	        |1.273	|3.6
 多线程（3线程）	|0.348  |3.6
-​
 
 # 十二、许可证
 版本|限制
@@ -1065,3 +1064,4 @@ Pro	    |功能上无限制，需相应许可请联系作者。
 WeChat     | Ldqczgsun
 Email      | 2263143197@qq.com
 CSDN Blog  | [阳光九叶草LZL](https://blog.csdn.net/qq_45111959?type=blog)
+QQ         | 2263143197 
