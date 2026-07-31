@@ -1,7 +1,7 @@
 # 一、环境信息
 名称 | 值
 ---- | -----
-CPU	| Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz
+CPU	| X86
 操作系统	| CentOS Linux release 7.9.2009 (Core)
 内存	| 5G
 逻辑核数	| 6
