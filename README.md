@@ -883,7 +883,7 @@ COPY public.actor
         QUOTE     '"',
         ESCAPE    '\');
 ```
-​
+
 ### （5）抽取的表定义展示
 ```
 
