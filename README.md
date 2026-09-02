@@ -60,7 +60,7 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 18、管理者进程等待所有执行者进程结束后，回收进程资源，释放自身所占用资源，结束退出。
 
 ## 2、离线抽取
-![HS](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HsPgUnload.png)
+![HS](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HsPgUnload1.png)
 PG数据离线抽取功能是一个多线程程序，解析流程如下：
 
 1、读取 pg_filenode.map
