@@ -64,14 +64,23 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 PG数据离线抽取功能是一个多线程程序，解析流程如下：
 
 1、读取 pg_filenode.map
+
 2、解析 pg_type
+
 3、解析 pg_class
+
 4、解析 pg_namespace
+
 5、解析 pg_attribute
+
 6、解析 pg_enum
+
 7、解析 pg_attrdef
+
 8、解析 pg_sequence
+
 9、并行解析用户表
+
 10、数据落地成 CSV文件，并生成序列定义、表定义、COPY语句
 
 # 四、升级点
