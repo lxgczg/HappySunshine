@@ -716,14 +716,14 @@ LOAD
 ```
 [root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# ./HsPgUnload /opt/Pg14-5/Data/base/13892/ /home/czg/TestPgData/ 8192 'public' 'blue' 3 2
 ```
-​
+
 ### （4）恢复数据示例
 ```
 psql -d sun -f /home/sun/TestPgData/PG_SEQ_DDL.txt
 psql -d sun -f /home/sun/TestPgData/PG_TAB_DDL.txt
 psql -d sun -f /home/sun/TestPgData/PG_COPY.txt
 ```
-​
+
 ### （5）COPY语句展示
 ```
 [root@dw01:/opt/Developer/ComputerLanguageStudy/C/DataStructureTestSrc/PublicFunction/PgReadData/Exec]# head /home/czg/TestPgData/PG_COPY.txt 
@@ -783,6 +783,7 @@ postgres=# select * from pgbench_accounts where aid in (970012,867879,252675,485
  970012 |  10 |     3886 |                                                                                     
 (10 rows)
 ```
+
 ### （9）生成的序列展示
 ```
 [root@localhost Exec]# head -25 /home/sun/TestPgData/PG_SEQ_DDL.txt 
