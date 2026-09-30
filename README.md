@@ -2,21 +2,45 @@
 名称 | 值
 ---- | -----
 CPU	| X86
-操作系统	| CentOS Linux release 7.9.2009 (Core)
+操作系统	| CentOS Linux release 8.5.2111
 内存	| 5G
 逻辑核数	| 6
-HappySunshine版本|V1.9
+HappySunshine版本|V1.10
 Kettle版本|pdi-ce-9.5.0.1-261
 Gbase8a版本|8.6.2-R43.34.27468a27
-Pg版本|PostgreSQL 14.5
-DM版本|1          DM Database Server 64 V8<br>2          DB Version: 0x7000c<br>3          03134284194-20240703-234060-20108<br>4          Msg Version: 12<br>5          Gsu level(5) cnt: 0
+Pg版本|PostgreSQL 14.5、14.24
+DM版本|V8、V9
 
 # 二、简述
 ![HS Logo](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HappySunshine.png)
 <br>HappySunshine数据库迁移工具是由C语言编写的多进程多线程程序，支持多种数据库之间的高效数据同步、数据离线（数据库宕机）抽取等，安装简便、简单配置即可使用，功能还在逐步完善中（其实是还在陆续补充新知识），有什么好的建议，大家可以在评论或私信告知。
 
 # 三、架构图
-## 1、在线迁移
+## 1、离线抽取
+![HS](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HsPgUnload1.png)
+PG数据离线抽取功能是一个多线程程序，解析流程如下：
+
+1、读取 pg_filenode.map
+
+2、解析 pg_type
+
+3、解析 pg_class
+
+4、解析 pg_namespace
+
+5、解析 pg_attribute
+
+6、解析 pg_enum
+
+7、解析 pg_attrdef
+
+8、解析 pg_sequence
+
+9、并行解析用户表
+
+10、数据落地成 CSV文件，并生成序列定义、表定义、COPY语句
+
+## 2、在线迁移
 ![HS](https://i-blog.csdnimg.cn/blog_migrate/69fb8c4716412dde87e34b76eadb2bb8.png)
 
 画图水平感觉还不错，给自己点个赞。
@@ -59,30 +83,6 @@ HappySunshine数据库迁移工具由一个管理者进程和N个执行者进程
 
 18、管理者进程等待所有执行者进程结束后，回收进程资源，释放自身所占用资源，结束退出。
 
-## 2、离线抽取
-![HS](https://github.com/lxgczg/HappySunshine/blob/main/Photo/HsPgUnload1.png)
-PG数据离线抽取功能是一个多线程程序，解析流程如下：
-
-1、读取 pg_filenode.map
-
-2、解析 pg_type
-
-3、解析 pg_class
-
-4、解析 pg_namespace
-
-5、解析 pg_attribute
-
-6、解析 pg_enum
-
-7、解析 pg_attrdef
-
-8、解析 pg_sequence
-
-9、并行解析用户表
-
-10、数据落地成 CSV文件，并生成序列定义、表定义、COPY语句
-
 # 四、升级点
 序号|名称|备注
 -- | ----- | ------ 
@@ -97,7 +97,6 @@ PG数据离线抽取功能是一个多线程程序，解析流程如下：
 9	|坏页场景下，TUP的状态计数有误BUG修复。	                |PG数据离线抽取功能。
 10	|普通表加列场景下，解析数据越界BUG修复。	            |PG数据离线抽取功能。
 11	|字典表数据落地。	                                    |PG数据离线抽取功能。
-
 
 # 五、支持功能
 ## 1、支持功能
