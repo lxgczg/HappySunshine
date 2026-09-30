@@ -295,20 +295,8 @@ pg_lsn
 [lzl@czg0 ~]$ unzip HappySunshine_V1.5_X86_Centos7.9_Release_日期.zip
 ```
 ## 3、环境变量配置
+vim /home/lzl/.bashrc 添加如下内容：
 ```
-[root@czg0 ~]# cat /home/lzl/.bashrc 
-# .bashrc
-
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-        . /etc/bashrc
-fi
-
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
-
-# User specific aliases and functions
-
 export HAPPY_SUNSHINE_HOME=/home/lzl/HappySunshine
 export LD_LIBRARY_PATH=$HAPPY_SUNSHINE_HOME/Libs:$LD_LIBRARY_PATH
 ```
